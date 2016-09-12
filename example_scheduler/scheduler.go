@@ -115,14 +115,22 @@ func (s *ExampleScheduler) ResourceOffers(driver scheduler.SchedulerDriver, offe
 		//as the uri to download the executor or executors from and the amount
 		//of resource the taks will use (not neccesary all from the offer)
 		task := &mesosproto.TaskInfo{
-			Name:     proto.String("go-task-" + taskId.GetValue()),
-			TaskId:   taskId,
-			SlaveId:  offer.SlaveId,
-			Executor: s.ExecutorInfo,
+			Name:    proto.String("go-task-" + taskId.GetValue()),
+			TaskId:  taskId,
+			SlaveId: offer.SlaveId,
 			Resources: []*mesosproto.Resource{
 				mesosutil.NewScalarResource("cpus", s.NeededCpu),
 				mesosutil.NewScalarResource("mem", s.NeededRam),
 				mesosutil.NewRangesResource("ports", offeredPort),
+			},
+			Command: &mesosproto.CommandInfo{
+				Value: proto.String("sleep 600"),
+			},
+			Container: &mesosproto.ContainerInfo{
+				Type: mesosproto.ContainerInfo_DOCKER.Enum(),
+				Docker: &mesosproto.ContainerInfo_DockerInfo{
+					Image: proto.String("index.alauda.cn/alauda/ubuntu"),
+				},
 			},
 			Data: []byte("Hello from Server"),
 		}

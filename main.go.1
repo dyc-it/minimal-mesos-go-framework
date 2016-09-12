@@ -7,7 +7,7 @@ import (
 	"github.com/mesos/mesos-go/mesosproto"
 	//"github.com/mesos/mesos-go/mesosutil"
 	"github.com/mesos/mesos-go/scheduler"
-	"minimal-mesos-go-framework/example_scheduler"
+	"github.com/sayden/minimal-mesos-go-framework/example_scheduler"
 
 	"os"
 
@@ -65,19 +65,18 @@ func main() {
 
 	principal := "marathon"
 	secret := "ele.me"
-	credential := &mesosproto.Credential{Principal: &principal, Secret: &secret}
+	credential := &mesosproto.Credential{Principal:&principal, Secret:&secret}
 
-	v := auth.WithLoginProvider(ct.Background(), "SASL")
 
 	//Scheduler Driver
 	config := scheduler.DriverConfig{
-		Scheduler: my_scheduler,
-		Framework: frameworkInfo,
-		Master:    *master,
+		Scheduler:  my_scheduler,
+		Framework:  frameworkInfo,
+		Master:     *master,
 		//Credential: (*mesosproto.Credential)(nil),
 		Credential: credential,
-		WithAuthContext: func(ct.Context) ct.Context {
-			return v
+		WithAuthContext : func(ct.Context) ct.Context {
+			return auth.WithLoginProvider(ct.Background(), "SASL")
 		},
 	}
 
